@@ -1,16 +1,16 @@
 @font-face {
     font-family: "Nohemi";
-    src: url(../assets/fonts/Nohemi-SemiBold.otf);
+    src: url(./assets/fonts/Nohemi-SemiBold.otf);
     font-weight: 600;
 }
 @font-face {
     font-family: "Nohemi-Regular";
-    src: url(../assets/fonts/Nohemi-Regular.otf);
+    src: url(./assets/fonts/Nohemi-Regular.otf);
     font-weight: 700;
 }
 @font-face {
     font-family: "Nohemi-Extra";
-    src: url(../assets/fonts/Nohemi-ExtraBold.otf);
+    src: url(./assets/fonts/Nohemi-ExtraBold.otf);
     font-weight: 800;
 }
 @font-face {
