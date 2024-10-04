@@ -15,7 +15,7 @@
 }
 @font-face {
     font-family: "Nohemi Light";
-    src: url(../assets/fonts/Nohemi-Light.otf);
+    src: url(./assets/fonts/Nohemi-Light.otf);
 }
 
 body {
