@@ -155,79 +155,89 @@ $(document).ready(function () {
         $speechText.focus(); // Ensure focus remains on the editor
     });
 
-    // $('#lang').on('change', function () {
-    //     const selectedLang = $(this).val();
-    //     $speechText.attr('lang', selectedLang);
-    //     $speechText.focus(); // Ensure focus remains on the editor
-    // });
+    
 });
 
-// $(document).ready(function() {
-//     $('#speech-text').on('input', function() {
-//         autoCapitalize();
-//     });
+$(document).ready(function() {
+    $('#speech-text').on('input', function() {
+        autoCapitalize();
+    });
 
-//     function autoCapitalize() {
-//         // Get the contenteditable div
-//         var $contentDiv = $('#speech-text');
-//         var content = $contentDiv.html();
+    function autoCapitalize() {
+        var $contentDiv = $('#speech-text');
+        var content = $contentDiv.html();
 
-//         // Capitalize the first letter of the content
-//         content = capitalizeFirstLetter(content);
+        // Save caret position before modifying the content
+        var caretPosition = saveCaretPosition($contentDiv[0]);
 
-//         // Capitalize the first letter after full stops
-//         content = capitalizeAfterDelimiters(content);
+        // Capitalize the first letter of the content
+        content = capitalizeFirstLetter(content);
 
-//         // Update the contenteditable div with the modified content
-//         $contentDiv.html(content);
+        // Capitalize the first letter after full stops
+        content = capitalizeAfterDelimiters(content);
 
-//         // Set the cursor to the end of the content
-//         setCaretToEnd($contentDiv);
-//     }
+        // Update the contenteditable div with the modified content
+        $contentDiv.html(content);
 
-//     function capitalizeFirstLetter(content) {
-//         return content.replace(/(?:^|\.\s*)([a-z])/g, function(match, p1) {
-//             return match.toUpperCase();
-//         });
-//     }
+        // Restore the caret position to where it was before
+        restoreCaretPosition($contentDiv[0], caretPosition);
+    }
 
-//     function capitalizeAfterDelimiters(content) {
-//         return content
-//         .replace(/(?:^|\.\s*|\n\s*|<\/p>\s*)([a-z])/g, function(match, p1) {
-//             return match.toUpperCase();
-//         })
-//         .replace(/(?:<br\s*\/?>\s*)([a-z])/g, function(match, p1) {
-//             return match.toUpperCase();
-//         });
-//     }
+    function capitalizeFirstLetter(content) {
+        return content.replace(/(?:^|\.\s*)([a-z])/g, function(match, p1) {
+            return match.toUpperCase();
+        });
+    }
 
-//     function setCaretToEnd($element) {
-//         var range = document.createRange();
-//         var sel = window.getSelection();
-//         range.selectNodeContents($element[0]);
-//         range.collapse(false);
-//         sel.removeAllRanges();
-//         sel.addRange(range);
-//     }
-// });
+    function capitalizeAfterDelimiters(content) {
+        return content
+        .replace(/(?:^|\.\s*|\n\s*|<\/p>\s*)([a-z])/g, function(match, p1) {
+            return match.toUpperCase();
+        })
+        .replace(/(?:<br\s*\/?>\s*)([a-z])/g, function(match, p1) {
+            return match.toUpperCase();
+        });
+    }
 
-// google.load("elements", "1", {
-//     packages: "transliteration"
-// });
+    // Save caret position
+    function saveCaretPosition(element) {
+        let range = window.getSelection().getRangeAt(0);
+        let preCaretRange = range.cloneRange();
+        preCaretRange.selectNodeContents(element);
+        preCaretRange.setEnd(range.endContainer, range.endOffset);
+        return preCaretRange.toString().length; // Return the caret position as a length
+    }
 
-// google.setOnLoadCallback(onLoad);
+    // Restore caret position
+    function restoreCaretPosition(element, caretOffset) {
+        let range = document.createRange();
+        let sel = window.getSelection();
 
-// let control;
+        let charIndex = 0;
+        let nodeStack = [element];
+        let node, found = false;
 
-// function onLoad() {
-//     var options = {
-//         sourceLanguage: 'en-IN',
-//         destinationLanguage: ['hi-IN', 'mr-IN'],  // Devanagari for Hindi and Marathi
-//         transliterationEnabled: true
-//     };
+        while (!found && (node = nodeStack.pop())) {
+            if (node.nodeType === 3) { // Text node
+                let nextCharIndex = charIndex + node.length;
+                if (caretOffset >= charIndex && caretOffset <= nextCharIndex) {
+                    range.setStart(node, caretOffset - charIndex);
+                    range.setEnd(node, caretOffset - charIndex);
+                    found = true;
+                }
+                charIndex = nextCharIndex;
+            } else {
+                let i = node.childNodes.length;
+                while (i--) {
+                    nodeStack.push(node.childNodes[i]);
+                }
+            }
+        }
 
-//     control = new google.elements.transliteration.TransliterationControl(options);
-// }
+        sel.removeAllRanges();
+        sel.addRange(range);
+    }
+});
 
 // Listen for changes in the transcription language and set typing mode accordingly
 document.getElementById('lang').addEventListener('change', function() {
