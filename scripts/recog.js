@@ -13,32 +13,48 @@ let recognition;
 function handleTextTransformations(text) {
   const lowerCasePhrase = "on lowercase";
   const capitalPhrase = "on capital";
+  const backspacePhrase = "delete";
 
   let lowerCaseIndex = text.toLowerCase().indexOf(lowerCasePhrase);
   let capitalIndex = text.toLowerCase().indexOf(capitalPhrase);
+  let backspaceIndex = text.toLowerCase().indexOf(backspacePhrase);
+
+  if (backspaceIndex !== -1) {
+    // Handle backspace command
+    text = deleteLastCharacter(text, backspaceIndex);
+  }
 
   if (lowerCaseIndex !== -1 && capitalIndex !== -1) {
     if (lowerCaseIndex < capitalIndex) {
-      // Apply "lowercase" first
       text = text.slice(0, lowerCaseIndex) + text.slice(lowerCaseIndex + lowerCasePhrase.length).toLowerCase();
-      // After applying "lowercase", apply "capital"
       text = text.slice(0, capitalIndex) + text.slice(capitalIndex + capitalPhrase.length).toUpperCase();
     } else {
-      // Apply "capital" first
       text = text.slice(0, capitalIndex) + text.slice(capitalIndex + capitalPhrase.length).toUpperCase();
-      // After applying "capital", apply "lowercase"
       text = text.slice(0, lowerCaseIndex) + text.slice(lowerCaseIndex + lowerCasePhrase.length).toLowerCase();
     }
   } else if (lowerCaseIndex !== -1) {
-    // Handle only "lowercase"
     text = text.slice(0, lowerCaseIndex) + text.slice(lowerCaseIndex + lowerCasePhrase.length).toLowerCase();
   } else if (capitalIndex !== -1) {
-    // Handle only "capital"
     text = text.slice(0, capitalIndex) + text.slice(capitalIndex + capitalPhrase.length).toUpperCase();
   }
+
+  text = wordConcat(text, recognition.lang);
+
+  // Capitalize the first letter of the entire text
+  text = text.charAt(0).toUpperCase() + text.slice(1);
+
+  // Capitalize the first letter after sentence-ending punctuation
+  text = text.replace(/([.!?]\s*)([a-z])/g, function(match, p1, p2) {
+    return p1 + p2.toUpperCase();
+  });
+
   return text;
 }
 
+function deleteLastCharacter(text, commandIndex) {
+  // Find the last text input before the "backspace" command and delete the last character
+  return text.slice(0, commandIndex - 1).trim();
+}
 function wordConcat(text, lang) {
   let replacedwords;
 
