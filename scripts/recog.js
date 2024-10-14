@@ -4,8 +4,8 @@ const resultText = document.getElementById('speech-text');
 const start = document.getElementById('start');
 const stop = document.getElementById('stop');
 const languageSelect = document.getElementById('lang');
-// const fontName = document.getElementById('fonts');
-// const fontSizeRef = document.getElementById('size');
+const fontName = document.getElementById('fonts');
+const fontSizeRef = document.getElementById('size');
 
 let speechRecognition  = window.speechRecognition || window.webkitSpeechRecognition;
 let recognition;
