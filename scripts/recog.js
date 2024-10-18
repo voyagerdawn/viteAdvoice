@@ -18,7 +18,7 @@ const courtPhrases = [
 ];
 
 function handleTextTransformations(text) {
-  const lowerCasePhrase = "on lowercase";
+  const lowerCasePhrase = "off capitalgi";
   const capitalPhrase = "on capital";
   const backspacePhrase = "delete";
 
@@ -26,9 +26,14 @@ function handleTextTransformations(text) {
   let capitalIndex = text.toLowerCase().indexOf(capitalPhrase);
   let backspaceIndex = text.toLowerCase().indexOf(backspacePhrase);
 
+  console.log("Original Text:", text);
+  console.log("Lowercase Index:", lowerCaseIndex);
+  console.log("Capital Index:", capitalIndex);
+  console.log("Delete Index:", backspaceIndex);
+
   if (backspaceIndex !== -1) {
-    // Handle backspace command
-    text = deleteLastCharacter(text, backspaceIndex);
+    text = deleteLastWord(text, backspaceIndex);
+    console.log("Text after delete:", text);
   }
 
   if (lowerCaseIndex !== -1 && capitalIndex !== -1) {
@@ -52,13 +57,6 @@ function handleTextTransformations(text) {
 
   text = wordConcat(text, recognition.lang);
 
-  text = text.charAt(0).toUpperCase() + text.slice(1);
-  text = text.replace(/([.!?]\s*)([a-z])/g, function(match, p1, p2) {
-    return p1 + p2.toUpperCase();
-  });
-
-  text = wordConcat(text, recognition.lang);
-
   // Capitalize the first letter of the entire text
   text = text.charAt(0).toUpperCase() + text.slice(1);
 
@@ -70,12 +68,34 @@ function handleTextTransformations(text) {
   return text;
 }
 
-function deleteLastCharacter(text, commandIndex) {
-  // Find the last text input before the "backspace" command and delete the last character
-  return text.slice(0, commandIndex - 1).trim();
+function deleteLastWord(text, commandIndex) {
+  // Find the position of the last space before the "delete" command
+  const lastSpaceIndex = text.lastIndexOf(' ', commandIndex);
+  
+  // If no space is found, return an empty string (if the delete command is at the start)
+  if (lastSpaceIndex === -1) {
+    return '';
+  }
+
+  // Remove the last word by slicing the string up to the last space
+  return text.slice(0, lastSpaceIndex).trim();
 }
+
 function wordConcat(text, lang) {
   let replacedwords;
+
+  const abbreviations = {
+    "number": "No.",
+    "doctor": "Dr.",
+    "honorable": "Hon'ble",
+    "mister": "Mr."
+  };
+
+  // Replace full words with their abbreviations
+  Object.keys(abbreviations).forEach((key) => {
+    const regex = new RegExp(`\\b${key}\\b`, 'gi'); // Match whole words, case insensitive
+    text = text.replace(regex, abbreviations[key]);
+  });
 
   function parseMonth(month) {
     const months = {
@@ -106,48 +126,50 @@ function wordConcat(text, lang) {
 
 
   if (lang === 'en') {
-    replacedwords = text.replaceAll("add underscore", "_")
-    .replaceAll("add under score", "_")
-    .replaceAll("add copyright symbol", "©")
-    .replaceAll("add copyright symbol", "©")
-    .replaceAll("add vertical bar", "|")
-    .replaceAll("add full stop", ". ")
-    .replaceAll("add stop", ". ")
-    .replaceAll("add colon", ":")
-    .replaceAll("add semi colon", "")
-    .replaceAll("add dash", "-")
-    .replaceAll("add space", " ")
-    .replaceAll("add apostrophe", "`")
-    .replaceAll("add coma", ",")
-    .replaceAll("add comma", ",")
-    .replaceAll("add open double quote", '"')
-    .replaceAll("add close double quote", '"')
-    .replaceAll("add open bracket", "(")
-    .replaceAll("add close bracket", ")")
-    .replaceAll("add percent", "%")
-    .replaceAll("add percentage", "%")
-    .replaceAll("add percent", "%")
-    .replaceAll("add percent age", "%")
-    .replaceAll("add percentage", "%")
-    .replaceAll("add at the rate", "@")
-    .replaceAll("add exclamation mark", "!")
-    .replaceAll("add question mark", "?")
-    .replaceAll("add ampersand", "&")
-    .replaceAll("add new line", "<br/>")
-    .replaceAll("add new para", "&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;")
-    .replaceAll("add bold","<strong>")
-    .replaceAll("no bold", "</strong>")
-    .replaceAll("no bold", "</strong>")
-    .replaceAll("add italic", "<em>")
-    .replaceAll("no italic", "</em>")
-    .replaceAll("add underline", "<u>")
-    .replaceAll("no underline", "</u>")
-    .replaceAll("add strike", "<s>")
-    .replaceAll("no strike", "</s>")
-    .replaceAll("add sub", "<sub>")
-    .replaceAll("no sub", "</sub>")
-    .replaceAll("add super", "<sup>")
-    .replaceAll("no super", "</sup>")
+    replacedwords = text.replaceAll(/add underscore/gi, "_")
+    .replaceAll(/add under score/gi, "_")
+    .replaceAll(/add copyright symbol/gi, "©")
+    .replaceAll(/add copyright symbol/gi, "©")
+    .replaceAll(/add vertical bar/gi, "|")
+    .replaceAll(/add full stop/gi, ". ")
+    .replaceAll(/add stop/gi, ". ")
+    .replaceAll(/add colon/gi, ":")
+    .replaceAll(/add semi colon/gi, "")
+    .replaceAll(/add dash/gi, "-")
+    .replaceAll(/at dash/gi, "-")
+    .replaceAll(/add space/gi, " ")
+    .replaceAll(/add apostrophe/gi, "`")
+    .replaceAll(/add coma/gi,",")
+    .replaceAll(/add comma/gi, ",")
+    .replaceAll(/add double quote/gi, '"')
+    .replaceAll(/add double coat/gi, '"')
+    .replaceAll(/add open bracket/gi, "(")
+    .replaceAll(/add close bracket/gi, ")")
+    .replaceAll(/add percent/gi, "%")
+    .replaceAll(/add percentage/gi, "%")
+    .replaceAll(/add percent/gi, "%")
+    .replaceAll(/add percent age/gi, "%")
+    .replaceAll(/add percentage/gi, "%")
+    .replaceAll(/add at the rate/gi, "@")
+    .replaceAll(/add exclamation mark/gi, "!")
+    .replaceAll(/add question mark/gi, "?")
+    .replaceAll(/add ampersand/gi, "&")
+    .replaceAll(/add and sign/gi, "&")
+    .replaceAll(/add new line/gi, "<br/>")
+    .replaceAll(/add new paragraph/gi, "&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;")
+    .replaceAll(/add bold/gi,"<strong>")
+    .replaceAll(/no bold/gi, "</strong>")
+    .replaceAll(/no bold/gi, "</strong>")
+    .replaceAll(/add italic/gi, "<em>")
+    .replaceAll(/no italic/gi, "</em>")
+    .replaceAll(/add underline/gi, "<u>")
+    .replaceAll(/no underline/gi, "</u>")
+    .replaceAll(/add strike/gi, "<s>")
+    .replaceAll(/no strike/gi, "</s>")
+    .replaceAll(/add sub/gi, "<sub>")
+    .replaceAll(/no sub/gi, "</sub>")
+    .replaceAll(/add super/gi, "<sup>")
+    .replaceAll(/no super/gi, "</sup>")
   } else {
     replacedwords = text.replaceAll("अंडरस्कोर", "_")
     .replaceAll("ऍड अंडर स्कोर", "_")
