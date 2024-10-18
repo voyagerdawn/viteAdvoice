@@ -95,7 +95,6 @@ function wordConcat(text, lang) {
     return months[month.toLowerCase()] || null;
   }
 
-  // Regex to capture dates like "12th November 2024"
   const spokenDatePattern = /(\d{1,2})(?:st|nd|rd|th)?\s+([a-zA-Z]+)\s+(\d{4})/;
   text = text.replace(spokenDatePattern, function(match, day, month, year) {
     let numericMonth = parseMonth(month);
