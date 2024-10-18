@@ -74,7 +74,6 @@ function deleteLastCharacter(text, commandIndex) {
   // Find the last text input before the "backspace" command and delete the last character
   return text.slice(0, commandIndex - 1).trim();
 }
-
 function wordConcat(text, lang) {
   let replacedwords;
 

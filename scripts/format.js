@@ -162,6 +162,17 @@ $(document).ready(function() {
     $('#speech-text').on('input', function() {
         autoCapitalize();
     });
+    // $('#lang').on('change', function () {
+    //     const selectedLang = $(this).val();
+    //     $speechText.attr('lang', selectedLang);
+    //     $speechText.focus(); // Ensure focus remains on the editor
+    // });
+});
+
+$(document).ready(function() {
+    $('#speech-text').on('input', function() {
+        autoCapitalize();
+    });
 
     function autoCapitalize() {
         var $contentDiv = $('#speech-text');
