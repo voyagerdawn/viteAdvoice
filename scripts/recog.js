@@ -9,6 +9,13 @@ const fontSizeRef = document.getElementById('size');
 
 let speechRecognition  = window.speechRecognition || window.webkitSpeechRecognition;
 let recognition;
+let speechGrammarList = new (window.SpeechGrammarList || window.webkitSpeechGrammarList)();
+
+const courtPhrases = [
+  'writ', 'subpoena', 'affidavit', 'testimony', 'injunction', 'plea', 
+  'defendant', 'plaintiff', 'deposition', 'court order', 'cross-examination',
+  'voir dire', 'arraignment', 'bench warrant', 'bailiff'
+];
 
 function handleTextTransformations(text) {
   const lowerCasePhrase = "on lowercase";
@@ -38,6 +45,21 @@ function handleTextTransformations(text) {
     text = text.slice(0, capitalIndex) + text.slice(capitalIndex + capitalPhrase.length).toUpperCase();
   }
 
+<<<<<<< HEAD
+  courtPhrases.forEach(phrase => {
+    const regex = new RegExp(`\\b${phrase}\\b`, 'gi');
+    text = text.replace(regex, phrase.toUpperCase());
+  });
+
+  text = wordConcat(text, recognition.lang);
+
+  text = text.charAt(0).toUpperCase() + text.slice(1);
+  text = text.replace(/([.!?]\s*)([a-z])/g, function(match, p1, p2) {
+    return p1 + p2.toUpperCase();
+  });
+
+=======
+>>>>>>> 15e15a750402b00e348b37587adacd84fc7f2702
   text = wordConcat(text, recognition.lang);
 
   // Capitalize the first letter of the entire text
@@ -55,8 +77,41 @@ function deleteLastCharacter(text, commandIndex) {
   // Find the last text input before the "backspace" command and delete the last character
   return text.slice(0, commandIndex - 1).trim();
 }
+<<<<<<< HEAD
+
+=======
+>>>>>>> 15e15a750402b00e348b37587adacd84fc7f2702
 function wordConcat(text, lang) {
   let replacedwords;
+
+  function parseMonth(month) {
+    const months = {
+      january: "01",
+      february: "02",
+      march: "03",
+      april: "04",
+      may: "05",
+      june: "06",
+      july: "07",
+      august: "08",
+      september: "09",
+      october: "10",
+      november: "11",
+      december: "12"
+    };
+    return months[month.toLowerCase()] || null;
+  }
+
+  // Regex to capture dates like "12th November 2024"
+  const spokenDatePattern = /(\d{1,2})(?:st|nd|rd|th)?\s+([a-zA-Z]+)\s+(\d{4})/;
+  text = text.replace(spokenDatePattern, function(match, day, month, year) {
+    let numericMonth = parseMonth(month);
+    if (numericMonth) {
+      return `${day.padStart(2, '0')}/${numericMonth}/${year}`;
+    }
+    return match;
+  });
+
 
   if (lang === 'en') {
     replacedwords = text.replaceAll("add underscore", "_")
@@ -73,10 +128,10 @@ function wordConcat(text, lang) {
     .replaceAll("add apostrophe", "`")
     .replaceAll("add coma", ",")
     .replaceAll("add comma", ",")
-    .replaceAll("add open quotation", '"')
-    .replaceAll("add close quotation", '"')
-    .replaceAll("add open parenthesis", "(")
-    .replaceAll("add close parenthesis", ")")
+    .replaceAll("add open double quote", '"')
+    .replaceAll("add close double quote", '"')
+    .replaceAll("add open bracket", "(")
+    .replaceAll("add close bracket", ")")
     .replaceAll("add percent", "%")
     .replaceAll("add percentage", "%")
     .replaceAll("add percent", "%")
