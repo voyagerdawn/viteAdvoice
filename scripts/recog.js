@@ -57,7 +57,6 @@ function handleTextTransformations(text) {
     return p1 + p2.toUpperCase();
   });
 
-
   text = wordConcat(text, recognition.lang);
 
   // Capitalize the first letter of the entire text
@@ -75,6 +74,8 @@ function deleteLastCharacter(text, commandIndex) {
   // Find the last text input before the "backspace" command and delete the last character
   return text.slice(0, commandIndex - 1).trim();
 }
+function wordConcat(text, lang) {
+  let replacedwords;
 
   function parseMonth(month) {
     const months = {
@@ -266,4 +267,4 @@ stop.addEventListener('click', function(){
   }
 });
 
-
+}
