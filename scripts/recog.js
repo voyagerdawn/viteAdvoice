@@ -143,6 +143,8 @@ function wordConcat(text, lang) {
     .replaceAll(/add comma/gi, ",")
     .replaceAll(/add double quote/gi, '"')
     .replaceAll(/add double coat/gi, '"')
+    .replaceAll(/at double quote/gi, '"')
+    .replaceAll(/at double coat/gi, '"')
     .replaceAll(/add open bracket/gi, "(")
     .replaceAll(/add close bracket/gi, ")")
     .replaceAll(/add percent/gi, "%")
