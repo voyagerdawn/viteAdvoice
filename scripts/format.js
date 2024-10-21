@@ -314,12 +314,29 @@ $(document).ready(function() {
         }
     });
     
+    // Helper function to split text into chunks of 500 characters
+    function splitTextIntoChunks(text, chunkSize = 500) {
+        let chunks = [];
+        for (let i = 0; i < text.length; i += chunkSize) {
+            chunks.push(text.slice(i, i + chunkSize));
+        }
+    return chunks;
+    }
+
     // Async function to call the MyMemory API for translation
     async function translateText(text, sourceLang, targetLanguage) {
-        const response = await fetch(`https://api.mymemory.translated.net/get?q=${encodeURIComponent(text)}&langpair=${sourceLang}|${targetLanguage}`);
-        const data = await response.json();
-        return data.responseData.translatedText;
+        let translatedText = '';
+        let chunks = splitTextIntoChunks(text, 500);
+
+        for (let chunk of chunks) {
+            const response = await fetch(`https://api.mymemory.translated.net/get?q=${encodeURIComponent(chunk)}&langpair=${sourceLang}|${targetLanguage}`);
+            const data = await response.json();
+            translatedText += data.responseData.translatedText + ' ';  // Append translated chunk with a space
+        }
+
+        return translatedText.trim();  // Return the combined translated text
     }
+
 });
 
 $(document).ready(function() {

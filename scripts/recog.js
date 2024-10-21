@@ -18,7 +18,7 @@ const courtPhrases = [
 ];
 
 function handleTextTransformations(text) {
-  const lowerCasePhrase = "off capitalgi";
+  const lowerCasePhrase = "off capital";
   const capitalPhrase = "on capital";
   const backspacePhrase = "delete";
 
