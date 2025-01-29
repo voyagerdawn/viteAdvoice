@@ -132,6 +132,7 @@ function wordConcat(text, lang) {
     .replaceAll(/add copyright symbol/gi, "©")
     .replaceAll(/add vertical bar/gi, "|")
     .replaceAll(/add full stop/gi, ". ")
+    .replaceAll(/add fullstop/gi, ". ")
     .replaceAll(/add stop/gi, ". ")
     .replaceAll(/add colon/gi, ":")
     .replaceAll(/add semi colon/gi, "")
